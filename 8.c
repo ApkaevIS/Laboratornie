@@ -12,20 +12,20 @@ struct oblast
 	float x;
 	float y;
 };
-float sluchainost(float l)
+float sluchainost(float l)//функция которая делает рандомные числа
 {
 	float l1 = rand()%100;
 	return l1;
 }
 
-struct oblast makepoint(float x, float y)
+struct oblast makepoint(float x, float y)//функция которая делает рандомную точку для определения области
 {
 	struct oblast obl;
 	obl.x = sluchainost(x);
 	obl.y = sluchainost(y);
 	return obl;
 }
-struct point makepoints(float x, float y, int F, int T, int J)
+struct point makepoints(float x, float y, int F, int T, int J)//функция которая делает много рандомных точек
 {
 	struct point tochka[T];
 	for(T=0;J != F;J++)
@@ -37,7 +37,7 @@ struct point makepoints(float x, float y, int F, int T, int J)
 	return tochka[T];
 }
 
-int kolvo(struct point tochka[T], struct oblast obl, int T, int r, int N)		
+int kolvo(int T, tochka[T], obl, int r, int N)//функция которая подсчитывает расстояние между точками		
 {
 	if(sqrt(((tochka[T].x - obl.x)*(tochka[T].x - obl.x))+((tochka[T].y - obl.y)*(tochka[T].y - obl.y))) <= r)
 		{
@@ -45,13 +45,13 @@ int kolvo(struct point tochka[T], struct oblast obl, int T, int r, int N)
 		}	
 	return N;	
 }
-int proverka(int F, int J, int N, int T, struct point tochka[T],struct oblast obl, float x1,float x2,float y1,float y2)
+int proverka(int F, int J, int N, int T, tochka[T], obl, float x1,float x2,float y1,float y2)//функция проверки принадлежности области
 {
 	for(T=0;J != F;J++,T++)
 	{	
 		if(x1 <= tochka[T].x && x2 >= tochka[T].x && y1 <= tochka[T].y && y2 >= tochka[T].y)
 			{
-				N = kolvo(struct point tochka[T], struct oblast obl,T,r,N);
+				N = kolvo(T,  tochka[T], obl, r, N);
 			}
 	}		
 		return N;
@@ -75,7 +75,7 @@ int main()
 	J = 0;
 	struct point tochka[T] = makepoints(x,y,F,T,J); 
 	start = omp_get_wtime();	
-	N = proverka(F, J, N, T, struct point tochka[T], struct oblast obl, x1, x2, y1, y2);
+	N = proverka(F, J, N, T, tochka[T], obl, x1, x2, y1, y2);
 	end = omp_get_wtime();	
 	printf("Колличество точек в области %d\n", N);
 	FILE *file;
