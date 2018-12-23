@@ -1,95 +1,104 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <omp.h>
-#include <math.h>
+#include  <stdio.h>
+#include  <stdlib.h>
+#include  <math.h>
+#include  <omp.h>
 
-struct point
+#define NPOINTS 100000
+
+struct Point
 {
-	float x,y;
+    double x;
+    double y;
 };
-typedef struct point point;	
-struct searchArea
+
+typedef struct Point Point;
+    
+struct SearchArea
 {
-	point center;
-	int r;
+    Point center;
+    double r;
 };
-typedef struct searchArea searchArea;
-searchArea obl;
-float getRandom()//функция которая делает рандомные числа
-{
-	float l = rand()%100;
-	return l;
-}
 
-point makepoint()//функция которая делает рандомную точку для определения области
-{
-	obl.center.x = getRandom();
-	obl.center.y = getRandom();
-	return obl.center;
-}
-point makepoints(int F, int T, int J)//функция которая делает много рандомных точек
-{
-	point tochka[T];
-	for(T=0;J != F;J++)
-		{
-			tochka[T].x = getRandom();
-			tochka[T].y = getRandom();
-			T = T+1;	
-		}
-	return tochka[T];
-}
+typedef struct SearchArea SearchArea;
 
-int kolvo(int T, point tochka[T], searchArea obl, int obl.r, int N)//функция которая подсчитывает расстояние между точками		
+double getRandomNumber();
+Point  getRandomPoint();
+SearchArea getSearchArea(double r);
+int isValid(double x,double y, SearchArea area);
+    
+int main(void)
 {
-	if(sqrt(((tochka[T].x - obl.center.x)*(tochka[T].x - obl.center.x))+((tochka[T].y - obl.center.y)*(tochka[T].y - obl.center.y))) <= obl.r)
-		{
-			N = N+1;
-		}	
-	return N;	
-}
-int proverka(int F, int J, int N, int T, point tochka[T], searchArea obl, float x1,float x2,float y1,float y2)//функция проверки принадлежности области
-{
-	for(T=0;J != F;J++,T++)
-	{	
-		if(x1 <= tochka[T].x && x2 >= tochka[T].x && y1 <= tochka[T].y && y2 >= tochka[T].y)
-			{
-				N = kolvo(T, point tochka[T], searchArea obl, obl.r, N);
-			}
-	}		
-		return N;
-}				
+    int i, N, true;
+    double x,y;
+    Point points[NPOINTS];
+    SearchArea area;
+    double start, end;
+    double r = 1.0;
+    
+    start = omp_get_wtime();
+    area = getSearchArea(r);
+    for (i = 0; i < NPOINTS; i++)
+    {
+        points[i].x = getRandomNumber();
+        points[i].y = getRandomNumber();
+    }
+        /* вот тут считать количествл можно */
 
-int main()
-{
-	float r, l, x, y;
-	float x1, x2, y1, y2;
-	float start,end, res;
-	char stt[255];
-	int T = 1000,F,J = 0,N = 0;
-	obl.r = 10;
-	searchArea obl.center = makepoint();
-	x1 = obl.center.x - obl.r;
-	x2 = obl.center.x + obl.r;
-	y1 = obl.center.y - obl.r;
-	y2 = obl.center.y + obl.r;
+    for (i = 0; i < NPOINTS; i++)
+    {
+    x = points[i].x;
+    y = points[i].y;  
+    true = isValid(x, y, area);
+    if(true == 1)
+    {
+        N = N+1;
+    }    
+    }       
 
-	F = T;	
-	J = 0;
-	point tochka[T] = makepoints(F,T,J); 
-	start = omp_get_wtime();	
-	N = proverka(F, J, N, T, point tochka[T], searchArea obl, x1, x2, y1, y2);
-	end = omp_get_wtime();	
-	printf("Колличество точек в области %d\n", N);
-	FILE *file;
-	file = fopen("laba8.txt", "a+");
+    printf("Колличество точек в области %d\n", N);
+    end = omp_get_wtime();
+    printf("Elapsed time: %lf s.\n", (end-start));
+    FILE *file;
+    file = fopen("laba8.txt", "a+");
           if ((file = fopen("laba8.txt","a+")) == NULL)
           {
             printf("Ошибка при открытии файла.\n");
             exit(1);
           }
-          fprintf(file,"%d\t %f\n", F, end-start);
-          fclose(file);  
-	printf("Work took %f sec. time.\n", end-start);				
+          fprintf(file,"%d\t %f\n", NPOINTS, end-start);
+          fclose(file);
+    return 0;
+}
 
-	return N;
-}		
+SearchArea getSearchArea(double r)
+{
+  SearchArea area;
+  area.center.x = getRandomNumber();
+  area.center.y = getRandomNumber();
+  area.r = r;
+  return area;  
+}
+
+double getRandomNumber()
+{
+    return fmod(rand(), 10.0f) + (1.0 / fmod(rand(), 10.0f));
+}
+
+Point getRandomPoint()
+{
+    Point p;
+    p.x = getRandomNumber();
+    p.y = getRandomNumber();
+    return p;
+}
+
+int isValid(double x, double y, SearchArea area)
+{
+    int N = 0;    
+        if(sqrt(((x - area.center.x)*(x - area.center.x))+((y - area.center.y)*(y - area.center.y))) <= area.r)
+        {
+            return 1;
+        }    
+    return 0;
+}    
+   
