@@ -1,5 +1,6 @@
 import math
 import random
+import time
 
 T = 1000
 
@@ -31,6 +32,7 @@ while i <= T:
 	i = i+1
 i = 0
 N = 0
+start_time = time.time()
 while i <= T: 	
 	x = pointx[i]
 	y = pointy[i]
@@ -41,3 +43,7 @@ while i <= T:
 
 print('Колличество точек в области ')
 print(N)
+print("--- %s seconds ---" % (time.time() - start_time))
+f =  open('laba8py.txt','w')
+f.write('{:2f}\t {:2f}'.format(T,(time.time() - start_time)))
+f.close
